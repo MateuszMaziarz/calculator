@@ -6,14 +6,14 @@ public class Operation {
     private final MathOperation command;
     private final Double value;
 
-    public Operation(MathOperation command, String valueInString) throws InputOperationsInvalidException {
+    public Operation(MathOperation command, String valueInString) {
         checkIsValueANumber(valueInString);
 
         this.command = command;
         this.value = Double.valueOf(valueInString);
     }
 
-    private static void checkIsValueANumber(String valueInString) throws InputOperationsInvalidException {
+    private static void checkIsValueANumber(String valueInString) {
         if (!NumberUtils.isCreatable(valueInString)) {
             throw new InputOperationsInvalidException("Value is not a number! (this command was skipped)");
         }
