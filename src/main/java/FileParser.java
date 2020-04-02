@@ -1,28 +1,32 @@
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileParser {
     private static final Set<String> OPERATIONS =
-            Arrays.stream(MathOperation.values()).map(Enum::name).collect(Collectors.toCollection(() -> new HashSet<>()));
+            Arrays.stream(MathOperation.values()).map(Enum::name).collect(Collectors.toCollection(HashSet::new));
 
 
     public static List<Operation> getOperations(String filePath) {
-        List<Operation> listOfParts = new LinkedList<>();
+        LinkedList<Operation> listOfParts = new LinkedList<>();
 
         Path file = Paths.get(filePath);
-        Charset charset = Charset.forName("UTF-8");
+        Charset charset = StandardCharsets.UTF_8;
 
         try (BufferedReader reader = Files.newBufferedReader(file, charset)) {
             String line;
             while ((line = reader.readLine()) != null) {
                 if (!line.equals(""))
-                    addItemToList((LinkedList<Operation>) listOfParts, line);
+                    addItemToList(listOfParts, line);
             }
         } catch (IOException e) {
             System.err.format("IOException: %s%n", e);
@@ -45,19 +49,19 @@ public class FileParser {
         }
     }
 
-    private static void validate(String[] splitLineTab) throws InputOperationsInvalidException {
+    private static void validate(String[] splitLineTab) {
         checkLengthOfTab(splitLineTab);
         checkArgumentNotNull(splitLineTab[0], splitLineTab[1]);
         checkCommand(splitLineTab[0]);
     }
 
-    private static void checkLengthOfTab(String[] splitLineTab) throws InputOperationsInvalidException {
+    private static void checkLengthOfTab(String[] splitLineTab) {
         if (splitLineTab.length != 2) {
             throw new InputOperationsInvalidException("Wrong length of argument tab! (this command was skipped)");
         }
     }
 
-    private static void checkArgumentNotNull(String commandInString, String valueInString) throws InputOperationsInvalidException {
+    private static void checkArgumentNotNull(String commandInString, String valueInString) {
         if (commandInString == null) {
             throw new InputOperationsInvalidException("Missing command!");
         }
@@ -66,7 +70,7 @@ public class FileParser {
         }
     }
 
-    private static void checkCommand(String commandInString) throws InputOperationsInvalidException {
+    private static void checkCommand(String commandInString) {
         if (!OPERATIONS.contains(commandInString.toUpperCase())) {
             throw new InputOperationsInvalidException("Wrong command");
         }
